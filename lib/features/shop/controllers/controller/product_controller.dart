@@ -1,0 +1,143 @@
+import 'package:e_commerce_application/utils/constants/enums.dart';
+import 'package:e_commerce_application/utils/pop_ups/snackbar_helpers.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import '../../../../data/repositories/product_repository.dart';
+import '../../models/product_model.dart';
+
+class ProductController extends GetxController {
+  static ProductController get instance => Get.find();
+
+  RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
+  RxBool isLoading = false.obs;
+
+  @override
+  void onInit() {
+    getFeaturedProducts();
+    super.onInit();
+  }
+
+  final _productRepository = Get.put(ProductRepository());
+
+  // Function to get only 4 featured products
+  Future<void> getFeaturedProducts() async {
+    try {
+      // start loading
+      isLoading.value = true;
+
+      // fetch featured products
+      List<ProductModel> featuredProducts = await _productRepository
+          .fetchFeaturedProducts();
+      this.featuredProducts.assignAll(featuredProducts);
+    } catch (e) {
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Function to get only 4 featured products
+  Future<List<ProductModel>> getAllFeaturedProducts() async {
+    try {
+
+
+      // fetch featured products
+      List<ProductModel> featuredProducts = await _productRepository
+          .fetchAllFeaturedProducts();
+    return featuredProducts;
+    } catch (e) {
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
+      return [];
+    }
+  }
+
+  // calculate Sale Precentge
+  String? calculateSalePercentage(double originalPrice, double? salePrice) {
+    if (salePrice == null || salePrice <= 0.0) {
+      return null;
+    }
+    if (originalPrice <= 0.0) {
+      return null;
+    }
+    double percentage = originalPrice - salePrice / originalPrice * 100;
+    return '${percentage.toStringAsFixed(1)}';
+  }
+
+  // String getProductprices(ProductModel product){
+  //   double smallestPrice=double.infinity;
+  //   double largestPrice=0.0;
+  //
+  //   if(product.productType==ProductType.single.toString()){
+  //     return product.salePrice>0?product.salePrice.toString():product.price.toString();
+  //   }
+  //   if(product.price<smallestPrice){
+  //     smallestPrice=product.price;
+  //   }else {
+  //     for (final variation in product.productVariations!) {
+  //       double variationPrice = variation.salePrice > 0
+  //           ? variation.salePrice
+  //           : variation.price;
+  //       if (variationPrice < smallestPrice) {
+  //         smallestPrice = variationPrice;
+  //       }
+  //       if (variationPrice > largestPrice) {
+  //         largestPrice = variationPrice;
+  //       }
+  //     }
+  //
+  //     if (smallestPrice.isEqual(largestPrice)) {
+  //       return largestPrice.toString();
+  //     } else {
+  //       return '${largestPrice.toStringAsFixed(0)} - ${smallestPrice
+  //           .toStringAsFixed(0)}';
+  //     }
+  //   }
+  //
+  // }
+  String getProductPrices(ProductModel product) {
+    // SINGLE PRODUCT
+    if (product.productType == ProductType.single.toString()) {
+      return product.salePrice > 0
+          ? product.salePrice.toString()
+          : product.price.toString();
+    }
+
+    // VARIABLE PRODUCT
+    double smallestPrice = double.infinity;
+    double largestPrice = 0.0;
+
+    // safety check
+    if (product.productVariations == null ||
+        product.productVariations!.isEmpty) {
+      return product.price.toString();
+    }
+
+    for (final variation in product.productVariations!) {
+      double variationPrice = variation.salePrice > 0
+          ? variation.salePrice
+          : variation.price;
+
+      if (variationPrice < smallestPrice) {
+        smallestPrice = variationPrice;
+      }
+      if (variationPrice > largestPrice) {
+        largestPrice = variationPrice;
+      }
+    }
+
+    if (smallestPrice == largestPrice) {
+      return largestPrice.toStringAsFixed(0);
+    }
+
+    return '${smallestPrice.toStringAsFixed(0)} - ${largestPrice.toStringAsFixed(0)}';
+  }
+
+
+  String getProductStockStatus(int stock){
+    return stock>0?'In Stock':'Out of Stock';
+  }
+}
+
+

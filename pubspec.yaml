@@ -1,0 +1,78 @@
+name: e_commerce_application
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+environment:
+  sdk: ^3.8.1
+
+
+  #--------[PACKAGES]------------
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.7
+  lottie: ^3.3.1
+  smooth_page_indicator: ^1.2.0+3
+  iconsax: ^0.0.8
+  intl: ^0.19.0
+  carousel_slider: ^5.0.0
+  shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
+  readmore: ^3.0.0
+
+
+
+
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  firebase_core: ^4.4.0
+  firebase_auth: ^6.1.4
+  cloud_firestore: ^6.1.2
+  google_sign_in: ^6.2.1
+  connectivity_plus: ^7.0.0
+  image_picker: ^1.2.1
+  firebase_storage: ^13.0.6
+
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+
+  #--------[ASSETS]------------
+  assets:
+    - assets/logo/
+    - assets/animations/
+    - assets/images/
+    - assets/icons/categories/
+    - assets/icons/payment_methods/
+    - assets/banners/
+    - assets/products/
+    - assets/brands/
+#    - assets/icons/payment_methods/
+
+
+  #--------[FONTS]------------
+  fonts:
+    - family: 'Nunito'
+      fonts:
+        - asset: assets/fonts/Nunito-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Nunito-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Nunito-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Nunito-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 800
