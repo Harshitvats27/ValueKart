@@ -25,6 +25,7 @@ import '../../../../utils/constants/images.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/brand/brand_controller.dart';
 import '../../controllers/categories/category_controller.dart';
+import '../brands/brand_products.dart';
 import '../home/widgets/home_app_bar.dart';
 import '../home/widgets/home_categories.dart';
 import '../../../../common/widgets/custom_shape/primary_header_container.dart';
@@ -88,7 +89,10 @@ class StoreScreen extends StatelessWidget {
 
                                         return SizedBox(
                                           width: USizes.brandCardWidth,
-                                          child: UBrandCard(brand: brand),
+                                          child: UBrandCard(brand: brand,onTap: () => Get.to(() => BrandProductsScreen(
+                                          title: brand.name,
+                                          brand: brand,
+                                        )),),
                                         );
                                       }
                                   );
@@ -109,7 +113,7 @@ class StoreScreen extends StatelessWidget {
             ];
           },
           body: TabBarView(
-            children: controller.featuredCategories.map((category) => UCategoryTab()).toList()
+            children: controller.featuredCategories.map((category) => UCategoryTab(category: category,)).toList()
           ),
         ),
       ),

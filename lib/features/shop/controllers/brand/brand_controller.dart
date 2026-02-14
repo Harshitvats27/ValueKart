@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_application/data/repositories/product_repository.dart';
+import 'package:e_commerce_application/features/shop/models/product_model.dart';
 import 'package:e_commerce_application/utils/pop_ups/snackbar_helpers.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/repositories/brand/brand_repository.dart';
 import '../../models/brand_model.dart';
 
-class BrandController extends GetxController{
+class BrandController extends GetxController {
   static BrandController get instance => Get.find();
 
   final _db = FirebaseFirestore.instance;
@@ -14,30 +16,54 @@ class BrandController extends GetxController{
   RxList<BrandModel> featuredBrands = <BrandModel>[].obs;
   RxBool isLoading = false.obs;
 
-
-
   @override
   void onInit() {
     getBrands();
     super.onInit();
   }
 
-  Future<void>getBrands()async{
-  try{
-    isLoading(true);
+  Future<void> getBrands() async {
+    try {
+      isLoading(true);
 
-    List<BrandModel> allBrands= await _repository.fetchBrands();
-    this.allBrands.assignAll(allBrands);
-    this.featuredBrands.assignAll(allBrands.where((brand) => brand.isFeatured?? false).toList());
-
-
-
-  }catch(e){
-    USnackBarHelpers.errorSnackBar(title: 'Failed',message: e.toString());
+      List<BrandModel> allBrands = await _repository.fetchBrands();
+      this.allBrands.assignAll(allBrands);
+      this.featuredBrands.assignAll(
+        allBrands.where((brand) => brand.isFeatured ?? false).toList(),
+      );
+    } catch (e) {
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
+    } finally {
+      isLoading(false);
+    }
   }
-finally{
-    isLoading(false);
 
+  // get Brand Specific Products
+  Future<List<ProductModel>> getBrandProducts(String brandId) async {
+    try {
+      List<ProductModel> products = await ProductRepository.instance
+          .getProductsForBrand(brandId: brandId);
+      return products;
+    } catch (e) {
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
+      return [];
+    }
   }
+
+  // Get Brands for Specific Category
+
+Future<List<BrandModel>> getBrandsForCategory(String categoryId) async {
+
+    try{
+
+    final brands = await _repository.fetchBrandsForCategory(categoryId);
+    return brands;
+
+
+
+    }catch(e){
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
+      return [];
+    }
 }
 }

@@ -38,7 +38,7 @@ class ProductController extends GetxController {
     }
   }
 
-  // Function to get only 4 featured products
+  // Function to get products
   Future<List<ProductModel>> getAllFeaturedProducts() async {
     try {
 

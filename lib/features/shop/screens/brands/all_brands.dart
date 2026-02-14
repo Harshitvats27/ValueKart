@@ -45,7 +45,10 @@ class AllBrandsScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       BrandModel brand = controller.allBrands[index];
                       return UBrandCard(
-                        onTap: () => Get.to(() => BrandProductsScreen()),
+                        onTap: () => Get.to(() => BrandProductsScreen(
+                          title: brand.name,
+                          brand: brand,
+                        )),
                         brand: brand,
                       );
                     },
