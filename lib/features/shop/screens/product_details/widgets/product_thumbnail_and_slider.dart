@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../common/widgets/appbar/appbar.dart';
+import '../../../../../common/widgets/favourite/favourite_icon.dart';
 import '../../../../../common/widgets/icons/circular_icon.dart';
 import '../../../../../common/widgets/images/rounded_image.dart';
 import '../../../../../utils/constants/colors.dart';
@@ -94,7 +95,7 @@ class UProductThumbnailandSlider extends StatelessWidget {
           // app bar back arrow and favourite button
           UAppBar(
             showBackArrow: true,
-            actions: [UCircularIcon(icon: Iconsax.heart5, color: Colors.red)],
+            actions: [UFavouriteIcon(productId: '',)],
           ),
         ],
       ),

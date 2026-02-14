@@ -1,4 +1,5 @@
 
+import 'package:e_commerce_application/common/widgets/favourite/favourite_icon.dart';
 import 'package:e_commerce_application/common/widgets/text/brand_title_with_verify_icon.dart';
 import 'package:e_commerce_application/common/widgets/text/product_price_text.dart';
 import 'package:e_commerce_application/common/widgets/text/product_title_text.dart';
@@ -70,11 +71,7 @@ class UProductCardHorizontal extends StatelessWidget {
                 Positioned(
                   right: 0,
                   top: 0,
-                  child: UCircularIcon(
-                    icon: Iconsax.heart5,
-                    color: Colors.red,
-                    backgroundColor: dark ? UColors.dark : UColors.white,
-                  ),
+                  child: UFavouriteIcon(productId: ''),
                 ),
               ],
             ),
