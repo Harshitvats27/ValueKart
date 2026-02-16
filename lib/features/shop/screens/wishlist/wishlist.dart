@@ -22,6 +22,7 @@ class WishListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller =Get.put(FavouriteController());
     return Scaffold(
       appBar: UAppBar(
         title: Text(
@@ -41,7 +42,7 @@ class WishListScreen extends StatelessWidget {
           padding: const EdgeInsets.all(USizes.defaultSpace),
           child: Obx(
             () => FutureBuilder(
-              future: FavouriteController.instance.getFavouriteProducts(),
+              future: controller.getFavouriteProducts(),
               builder: (context, snapshot) {
                 // Handle Emptyu Data
                 final nothingFound = UAnimationLoader(

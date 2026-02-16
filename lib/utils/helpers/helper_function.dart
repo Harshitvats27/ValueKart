@@ -180,6 +180,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class UHelperfunctions{
   UHelperfunctions._();
@@ -240,7 +241,9 @@ class UHelperfunctions{
       return 'Good Night';
     }
   }
-
+  static String getFormattedDate(DateTime date, {String format = 'dd MMM yyyy'}) {
+    return DateFormat(format).format(date);
+  }
 
 }
 

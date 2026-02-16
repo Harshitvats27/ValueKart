@@ -18,6 +18,7 @@ import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helpers/helper_function.dart';
 import '../../../style/shadow.dart';
+import '../../button/add_to_cart_button.dart';
 import '../../text/brand_title_with_verify_icon.dart';
 import '../../text/product_title_text.dart';
 
@@ -114,19 +115,7 @@ class UProductcardVertical extends StatelessWidget {
                   padding: const EdgeInsets.only(left: USizes.sm),
                   child: UProductPriceText(price: controller.getProductPrices(productModel), isLarge: true),
                 ),
-                Container(
-                  width: USizes.iconLg * 1.2,
-                  height: USizes.iconLg * 1.2,
-
-                  decoration: BoxDecoration(
-                    color: UColors.primary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(USizes.cardRadiusMd),
-                      bottomRight: Radius.circular(USizes.productImageRadius),
-                    ),
-                  ),
-                  child: Icon(Iconsax.add, color: UColors.white),
-                ),
+                ProductAddToCartButton(product: productModel),
               ],
             ),
           ],

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../features/shop/models/category_model.dart';
 import '../../../utils/exception/firebase_exception.dart';
 import '../../../utils/exception/format_exception.dart';
+import '../../../utils/exception/platform_exception.dart';
 
 class CategoryRepository extends GetxController {
   static CategoryRepository get instance => Get.find();
@@ -64,5 +65,53 @@ return[];
     }
   }
 
+  /// [FetchCategories] - Function to fetch list of categories
+  Future<List<CategoryModel>> getAllCategories() async{
+    try{
+
+      final query = await _db.collection(UKeys.categoryCollection).get();
+
+      if(query.docs.isNotEmpty){
+        List<CategoryModel> categories = query.docs.map((document) => CategoryModel.fromSnapshot(document)).toList();
+        return categories;
+      }
+
+      return [];
+
+    }on FirebaseException catch(e){
+      throw UFirebaseException(e.code).message;
+    } on FormatException catch(_){
+      throw UFormatException();
+    } on PlatformException catch(e){
+      throw UPlatformException(e.code).message;
+    } catch(e){
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  /// [FetchSubCategories] - Function to fetch list of sub categories
+  Future<List<CategoryModel>> getSubCategories(String categoryId) async{
+    try{
+
+      final query = await _db.collection(UKeys.categoryCollection).where('parentId', isEqualTo: categoryId).get();
+
+      if(query.docs.isNotEmpty){
+        List<CategoryModel> categories = query.docs.map((document) => CategoryModel.fromSnapshot(document)).toList();
+        return categories;
+      }
+
+      return [];
+
+    }on FirebaseException catch(e){
+      throw UFirebaseException(e.code).message;
+    } on FormatException catch(_){
+      throw UFormatException();
+    } on PlatformException catch(e){
+      throw UPlatformException(e.code).message;
+    } catch(e){
+      throw 'Something went wrong. Please try again';
+    }
+  }
 
 }
+

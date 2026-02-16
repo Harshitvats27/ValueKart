@@ -10,13 +10,18 @@ import 'package:e_commerce_application/navigation_menu.dart';
 import 'package:e_commerce_application/utils/constants/colors.dart';
 import 'package:e_commerce_application/utils/constants/images.dart';
 import 'package:e_commerce_application/utils/constants/sizes.dart';
+import 'package:e_commerce_application/utils/constants/text.dart';
 import 'package:e_commerce_application/utils/helpers/helper_function.dart';
+import 'package:e_commerce_application/utils/helpers/pricing_calculator.dart';
+import 'package:e_commerce_application/utils/pop_ups/snackbar_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../../../common/widgets/button/elevated_button.dart';
 import '../../../../../../common/widgets/textfields/promo_code.dart';
+import '../../../../controllers/cart/cart_controller.dart';
+import '../../../../controllers/order/order_controller.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
@@ -24,6 +29,13 @@ class CheckoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = UHelperfunctions.isDarkTheme(context);
+    final controller = CartController.instance;
+    final orderController = Get.put(OrderController());
+    double subTotal = controller.totalCartPrice.value;
+    double totalPrice = UPricingCalculator.calculateTotalPrice(
+      subTotal,
+      'Kenya',
+    );
     return Scaffold(
       appBar: UAppBar(
         showBackArrow: true,
@@ -63,15 +75,13 @@ class CheckoutScreen extends StatelessWidget {
       ),
 
       bottomNavigationBar: UElevatedButton(
-        onPressed: () => Get.to(
-          () => SuccessScreen(
-            image: UImages.successfulPaymentIcon,
-            title: 'Payment Success',
-            subTitle: 'Your Items will be Shipped Soon',
-            onTap: () => Get.offAll(() => NavigationMenu()),
-          ),
-        ),
-        child: Text('Checkout \$ 134435'),
+        onPressed: subTotal > 0
+            ?()=> orderController.processOrder(totalPrice)
+            : ()=>USnackBarHelpers.errorSnackBar(
+                title: 'Empty Cart',
+                message: 'Add items in the cart',
+              ),
+        child: Text('Checkout ${UTexts.currency}$totalPrice'),
       ),
     );
   }

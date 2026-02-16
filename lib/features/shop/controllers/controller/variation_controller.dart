@@ -1,3 +1,4 @@
+import 'package:e_commerce_application/features/shop/controllers/cart/cart_controller.dart';
 import 'package:e_commerce_application/features/shop/controllers/controller/image_controller.dart';
 import 'package:e_commerce_application/features/shop/models/product_model.dart';
 import 'package:e_commerce_application/features/shop/models/product_variation_model.dart';
@@ -36,6 +37,11 @@ class VariationController extends GetxController {
     if (selectedVariation.image.isNotEmpty) {
       ImageController.instance.selectedProductImage.value =
           selectedVariation.image;
+    }
+
+    if(selectedVariation.id.isNotEmpty){
+      final cartController=CartController.instance;
+      cartController.productQuantityInCart.value=cartController.getVariationQuantityInCart(product.id,selectedVariation.id);
     }
     // Assiogn selected Variation in RX variable
 
@@ -85,5 +91,11 @@ class VariationController extends GetxController {
 
    String getVariationPrice() {
     return (selectedVariation.value.salePrice > 0?selectedVariation.value.salePrice:selectedVariation.value.price).toStringAsFixed(0);
+  }
+
+  void resetSelectedAttributes() {
+    selectedAttribute.clear();
+    variationStockStatus.value = '';
+    selectedVariation.value = ProductVariationModel.empty();
   }
 }

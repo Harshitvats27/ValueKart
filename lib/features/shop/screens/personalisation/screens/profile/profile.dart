@@ -3,6 +3,7 @@ import 'package:e_commerce_application/common/widgets/custom_shape/primary_heade
 import 'package:e_commerce_application/common/widgets/images/circular_image.dart';
 import 'package:e_commerce_application/common/widgets/text/section_heading.dart';
 import 'package:e_commerce_application/features/shop/screens/order/order.dart';
+import 'package:e_commerce_application/features/shop/screens/personalisation/screens/cart/cart.dart';
 import 'package:e_commerce_application/features/shop/screens/personalisation/screens/profile/widgets/profile_primary_header.dart';
 import 'package:e_commerce_application/features/shop/screens/personalisation/screens/profile/widgets/setting_menu_tile.dart';
 import 'package:e_commerce_application/features/shop/screens/personalisation/screens/profile/widgets/user_profile_details.dart';
@@ -46,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
                     title: 'MY Addresses',
                     subtitle: 'Set Shopping delivery address',
                   ),
-                  SettingMenuTile(ontap: (){},
+                  SettingMenuTile(ontap: ()=>Get.to(()=>CartScreen()),
                     icon: Iconsax.shopping_cart,
                     title: 'My Cart',
                     subtitle: 'Add,remove products and move to checkout',

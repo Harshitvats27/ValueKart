@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UProductPriceText extends StatelessWidget {
   const UProductPriceText(
       {super.key,
-        this.currentSign = '\$',
+        this.currentSign = '\₹',
         required this.price,
         this.maxLines = 1,
         this.isLarge = false,

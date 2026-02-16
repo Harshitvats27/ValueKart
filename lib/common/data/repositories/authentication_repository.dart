@@ -15,12 +15,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../features/authentication/controllers/signup/verify_email_controller.dart';
 import '../../../features/authentication/screens/onboarding/onboarding.dart';
+import '../../../features/shop/controllers/cart/cart_controller.dart';
 import '../../../features/shop/screens/home/home.dart';
 import '../../../utils/exception/firebase_auth_exception.dart';
 import '../../../utils/exception/firebase_exception.dart';
 
 class AuthenticationReposiotory extends GetxController {
   static AuthenticationReposiotory get instance => Get.find();
+
+  Stream<User?> get authState => _auth.authStateChanges();
+
+
   final Localstorage = GetStorage();
   final _auth = FirebaseAuth.instance;
 
@@ -179,6 +184,9 @@ class AuthenticationReposiotory extends GetxController {
 
   Future<void> logout() async {
     try {
+      if (Get.isRegistered<CartController>()) {
+        Get.delete<CartController>();
+      }
       await FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
       Get.offAll(() => LoginScreen());
