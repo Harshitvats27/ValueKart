@@ -1,5 +1,7 @@
 import 'package:e_commerce_application/common/data/repositories/user/user_repository.dart';
 import 'package:e_commerce_application/data/repositories/brand/brand_repository.dart';
+import 'package:e_commerce_application/data/repositories/promo_code/promo_code_repository.dart';
+import 'package:e_commerce_application/dummy_data.dart';
 import 'package:e_commerce_application/features/authentication/screens/login/login.dart';
 import 'package:e_commerce_application/features/authentication/screens/signup/verify_email.dart';
 import 'package:e_commerce_application/navigation_menu.dart';

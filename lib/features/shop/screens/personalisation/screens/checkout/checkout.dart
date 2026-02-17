@@ -21,7 +21,9 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../../../../common/widgets/button/elevated_button.dart';
 import '../../../../../../common/widgets/textfields/promo_code.dart';
 import '../../../../controllers/cart/cart_controller.dart';
+import '../../../../controllers/checkout/checkout_controller.dart';
 import '../../../../controllers/order/order_controller.dart';
+import '../../../../controllers/promo_code/promo_code_controller.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
@@ -31,6 +33,7 @@ class CheckoutScreen extends StatelessWidget {
     final dark = UHelperfunctions.isDarkTheme(context);
     final controller = CartController.instance;
     final orderController = Get.put(OrderController());
+    final promoCodeController = Get.put(PromoCodeController());
     double subTotal = controller.totalCartPrice.value;
     double totalPrice = UPricingCalculator.calculateTotalPrice(
       subTotal,
@@ -74,15 +77,24 @@ class CheckoutScreen extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar: UElevatedButton(
-        onPressed: subTotal > 0
-            ?()=> orderController.processOrder(totalPrice)
-            : ()=>USnackBarHelpers.errorSnackBar(
-                title: 'Empty Cart',
-                message: 'Add items in the cart',
-              ),
-        child: Text('Checkout ${UTexts.currency}$totalPrice'),
-      ),
+      bottomNavigationBar: Obx(() {
+        final promoCode = promoCodeController.appliedPromoCode.value;
+        promoCodeController.calculatePriceAfterDiscount(promoCode, totalPrice);
+        totalPrice = promoCodeController.calculatePriceAfterDiscount(
+          promoCode,
+          totalPrice,
+        );
+
+        return UElevatedButton(
+          onPressed: subTotal > 0
+              ? () => CheckoutController.instance.handleCheckout(totalPrice)
+              : () => USnackBarHelpers.errorSnackBar(
+                  title: 'Empty Cart',
+                  message: 'Add items in the cart',
+                ),
+          child: Text('Checkout ${UTexts.currency}${totalPrice.toStringAsFixed(2)}'),
+        );
+      }),
     );
   }
 }

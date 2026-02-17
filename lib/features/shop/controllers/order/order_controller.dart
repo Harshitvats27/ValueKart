@@ -13,14 +13,14 @@ import '../../../../utils/pop_ups/full_screen_loader.dart';
 import '../../../personalisation/controllers/address_controller.dart';
 import '../../models/order_model.dart';
 import '../checkout/checkout_controller.dart';
+import '../promo_code/promo_code_controller.dart';
 
-class OrderController extends GetxController{
+class OrderController extends GetxController {
   static OrderController get instance => Get.find();
-  final cartController =CartController.instance;
-  final checkoutControllerc =CheckoutController.instance;
-  final addressController =AddressController.instance;
+  final cartController = CartController.instance;
+  final checkoutControllerc = CheckoutController.instance;
+  final addressController = AddressController.instance;
   final _repository = Get.put(OrderRepository());
-
 
   Future<void> processOrder(double totalAmount) async {
     try {
@@ -44,38 +44,47 @@ class OrderController extends GetxController{
         deliveryDate: DateTime.now().add(Duration(days: 3)),
       );
       await _repository.saveOrder(order);
+      // 🔥 Decrease promo code count after successful order
+      if (PromoCodeController.instance.appliedPromoCode.value.id.isNotEmpty) {
+        await PromoCodeController.instance.decreaseNoOfPromoCodes();
+      }
+      // 🔥 Add user to promo AFTER successful order
+      if (PromoCodeController.instance.appliedPromoCode.value.id.isNotEmpty) {
+
+        await PromoCodeController.instance.addUserToPromoCode();
+
+        await PromoCodeController.instance.decreaseNoOfPromoCodes();
+      }
+
+
       cartController.clearCart();
       Get.to(
-            () => SuccessScreen(
+        () => SuccessScreen(
           image: UImages.successfulPaymentIcon,
           title: 'Payment Success',
           subTitle: 'Your Items will be Shipped Soon',
-          onTap: () => Get.offAll(() => NavigationMenu())
-        )
+          onTap: () => Get.offAll(() => NavigationMenu()),
+        ),
       );
-
     } catch (e) {
-      USnackBarHelpers.errorSnackBar(title: 'Order Failed',message: e.toString());
-
+      USnackBarHelpers.errorSnackBar(
+        title: 'Order Failed',
+        message: e.toString(),
+      );
     }
   }
-
-
 
   Future<List<OrderModel>> fetchUserOrders() async {
     try {
       final orders = await _repository.fetchUserOrders();
       return orders;
     } catch (e) {
-      USnackBarHelpers.errorSnackBar(
-        title: 'Failed',
-        message: e.toString(),
-      );
+      USnackBarHelpers.errorSnackBar(title: 'Failed', message: e.toString());
       return [];
     }
   }
 
-
-
-
+  Future<void> processOrderFromRazorpay(String paymentId) async {
+    await processOrder(cartController.totalCartPrice.value);
+  }
 }

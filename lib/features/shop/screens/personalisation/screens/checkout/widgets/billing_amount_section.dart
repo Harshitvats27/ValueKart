@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../../../../../../utils/constants/colors.dart';
 import '../../../../../../../utils/constants/sizes.dart';
 import '../../../../../controllers/cart/cart_controller.dart';
+import '../../../../../controllers/promo_code/promo_code_controller.dart';
 
 class UBillingAmountSection extends StatelessWidget {
   const UBillingAmountSection({super.key});
@@ -15,7 +17,8 @@ class UBillingAmountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
-    final controller = Get.put(CartController());
+    final promoCodeController =PromoCodeController.instance;
+
 
     return Column(
       children: [
@@ -74,12 +77,56 @@ class UBillingAmountSection extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                Text(
-                  '${UTexts.currency}${UPricingCalculator.calculateTotalPrice(subTotal, 'Kenya')}',
-                  style: Theme.of(context).textTheme.titleMedium,
+                Obx(
+                  (){
+                    double totalPrice = UPricingCalculator.calculateTotalPrice(
+                      subTotal,
+                      'Kenya',
+                    );
+                    final promoCode = promoCodeController.appliedPromoCode.value;
+                     totalPrice = promoCodeController.calculatePriceAfterDiscount(
+                      promoCode,
+                      totalPrice,
+                    );
+
+                    return Text(
+                      '${UTexts.currency}${totalPrice.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    );
+                  }
                 ),
               ],
             ),
+
+SizedBox(height: USizes.spaceBtwItems / 2),
+            Obx(() {
+              final promoCode = promoCodeController.appliedPromoCode.value;
+
+              if (promoCode.id.isEmpty) return SizedBox();
+
+              return Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Discount',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .apply(color: UColors.success),
+                    ),
+                  ),
+                  Text(promoCodeController.getDiscountPrice()),
+                ],
+              );
+            })
+
+
+
+
+
+
+
+
           ],
         ),
       ],

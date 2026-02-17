@@ -1,5 +1,8 @@
 
+import 'package:e_commerce_application/features/shop/screens/search_store/search_store.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../utils/constants/colors.dart';
@@ -20,21 +23,27 @@ class USearchBar extends StatelessWidget {
       bottom: 0,
       right: USizes.spaceBtwSections,
       left: USizes.spaceBtwSections,
-      child: Container(
-        height: USizes.searchBarHeight,
-        padding: EdgeInsets.symmetric(horizontal: USizes.md),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadiusGeometry.circular(USizes.borderRadiusLg),
-            color: dark ? UColors.dark : UColors.light,
-            boxShadow:UShadow.searchBarShadow
-
-        ),
-        child: Row(
-          children: [
-            Icon(Iconsax.search_normal,color: UColors.darkerGrey,),
-            SizedBox(width: USizes.spaceBtwItems,),
-            Text(UTexts.searchBarTitle,style: Theme.of(context).textTheme.bodySmall,)
-          ],
+      child: GestureDetector(
+        onTap: ()=>Get.to(()=>SearchStoreScreen()),
+        child: Hero(
+          tag: 'search_animation',
+          child: Container(
+            height: USizes.searchBarHeight,
+            padding: EdgeInsets.symmetric(horizontal: USizes.md),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadiusGeometry.circular(USizes.borderRadiusLg),
+                color: dark ? UColors.dark : UColors.light,
+                boxShadow:UShadow.searchBarShadow
+          
+            ),
+            child: Row(
+              children: [
+                Icon(Iconsax.search_normal,color: UColors.darkerGrey,),
+                SizedBox(width: USizes.spaceBtwItems,),
+                Text(UTexts.searchBarTitle,style: Theme.of(context).textTheme.bodySmall,)
+              ],
+            ),
+          ),
         ),
       ),
     );
