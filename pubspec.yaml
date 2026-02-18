@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_native_splash: ^2.4.7
   lottie: ^3.3.1
   smooth_page_indicator: ^1.2.0+3
   iconsax: ^0.0.8
@@ -44,6 +43,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.13.1
+
 flutter:
   uses-material-design: true
 
@@ -79,3 +81,29 @@ flutter:
           weight: 600
         - asset: assets/fonts/Nunito-Bold.ttf
           weight: 800
+
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#000000"
+  image_dark: assets/logo/black_app_logo.png
+  image: assets/logo/white_app_logo.png
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#000000"
+    image_dark: assets/logo/black_app_logo.png
+    image: assets/logo/white_app_logo.png
+
+  web: false
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  android_round: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_background_dark: "#000000"
+  adaptive_icon_foreground: "assets/logo/app_logo_light.png"
+  adaptive_icon_foreground_dark: "assets/logo/app_logo_dark.png"
+  image_path_android: "assets/logo/app_logo_light.png"
+  image_path_ios: "assets/logo/app_logo_light.png"
