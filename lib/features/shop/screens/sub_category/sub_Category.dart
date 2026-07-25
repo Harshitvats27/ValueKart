@@ -8,9 +8,11 @@ import 'package:e_commerce_application/utils/constants/sizes.dart';
 import 'package:e_commerce_application/utils/helpers/cloud_helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 import '../../../../common/widgets/products/product_cards/product_card_horizontal.dart';
 import '../../../../utils/helpers/helper_function.dart';
+import '../../../../utils/helpers/u_empty_state_widget.dart';
 import '../../controllers/categories/category_controller.dart';
 import '../../models/product_model.dart';
 
@@ -72,9 +74,10 @@ class SubCategoryScreen extends StatelessWidget {
                               }
                               // 3. Empty State (NO PRODUCTS)
                               else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                content = const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Text('No products available right now.'),
+                                content = const UEmptyStateWidget(
+                                  icon: Iconsax.box_remove,
+                                  title: "No items available near you right now 😔",
+                                  subTitle: "Local stores around your selected address run out of these items quickly. Check back soon!",
                                 );
                               }
                               // 4. Products Found

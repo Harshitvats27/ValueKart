@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../../personalisation/controllers/user_controller.dart';
 import '../address/address.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(

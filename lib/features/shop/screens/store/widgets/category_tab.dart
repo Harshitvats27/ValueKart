@@ -32,11 +32,11 @@ class UCategoryTab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: USizes.defaultSpace),
           child: Column(
             children: [
-              CategoryBrands(category: category),
-
-              SizedBox(height: USizes.spaceBtwItems),
+              //CategoryBrands(category: category),
+              //
+              // SizedBox(height: USizes.spaceBtwItems),
               USectionHeading(
-                title: 'You  Might Like ',
+                title: 'Explore Products',
                 onPressed: () => Get.to(
                   () => AllProductsScreen(
                     title: category.name,

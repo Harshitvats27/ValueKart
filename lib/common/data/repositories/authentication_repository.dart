@@ -17,7 +17,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../features/authentication/controllers/signup/verify_email_controller.dart';
 import '../../../features/authentication/screens/onboarding/onboarding.dart';
+import '../../../features/personalisation/controllers/address_controller.dart';
+import '../../../features/personalisation/controllers/user_controller.dart';
 import '../../../features/shop/controllers/cart/cart_controller.dart';
+import '../../../features/shop/controllers/controller/product_controller.dart';
 import '../../../features/shop/screens/home/home.dart';
 import '../../../utils/exception/firebase_auth_exception.dart';
 import '../../../utils/exception/firebase_exception.dart';
@@ -186,11 +189,15 @@ class AuthenticationReposiotory extends GetxController {
 
   Future<void> logout() async {
     try {
-      if (Get.isRegistered<CartController>()) {
-        Get.delete<CartController>();
-      }
+      // 🔥 FIX: Saare controllers ko memory se uda do taaki naye user ko purana data na dikhe
+      if (Get.isRegistered<CartController>()) Get.delete<CartController>();
+      if (Get.isRegistered<AddressController>()) Get.delete<AddressController>();
+      if (Get.isRegistered<UserController>()) Get.delete<UserController>();
+      if (Get.isRegistered<ProductController>()) Get.delete<ProductController>(); // <-- YE MANDATORY HAI
+
       await FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
+
       Get.offAll(() => const LoginScreen(),
           transition: Transition.fadeIn,
           duration: const Duration(milliseconds: 500));

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+import 'features/personalisation/controllers/address_controller.dart';
+import 'features/personalisation/controllers/user_controller.dart';
+import 'features/shop/controllers/cart/cart_controller.dart';
 import 'features/shop/screens/home/home.dart';
 import 'features/shop/screens/personalisation/screens/profile/profile.dart';
 import 'features/shop/screens/wishlist/wishlist.dart';
@@ -16,6 +19,9 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
+    Get.put(UserController());
+    Get.put(AddressController());
+    Get.put(CartController());
     bool dark = UHelperfunctions.isDarkTheme(context);
     int selectedIndex = 0;
     return Scaffold(

@@ -22,7 +22,7 @@ class UBillingAddressSection extends StatelessWidget {
       children: [
         USectionHeading(
           title: 'Billing Address',
-          buttonTitle: 'Change',
+          buttonTitle: 'Select Address',
           onPressed: () => controller.selectNewAddressBottomSheet(context),
         ),
         Obx(() {

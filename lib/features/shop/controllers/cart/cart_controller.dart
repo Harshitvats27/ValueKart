@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_application/common/data/repositories/authentication_repository.dart';
 import 'package:e_commerce_application/features/shop/models/product_variation_model.dart';
 import 'package:e_commerce_application/utils/constants/enums.dart';
 import 'package:e_commerce_application/utils/constants/key.dart';
 import 'package:e_commerce_application/utils/pop_ups/snackbar_helpers.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../personalisation/controllers/address_controller.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/product_model.dart';
 import '../controller/variation_controller.dart';
@@ -60,7 +63,72 @@ class CartController extends GetxController {
 
 
   // Add Items in the cart
-  void addToCart(ProductModel product) {
+  // void addToCart(ProductModel product) {
+  //   // check quantity of the product
+  //   if (productQuantityInCart < 1) {
+  //     USnackBarHelpers.customToast(message: 'Select Quantity');
+  //     return;
+  //   }
+  //   // Check variation of the product if it is a variable product
+  //   if (product.productType == ProductType.variable.toString() &&
+  //       variationController.selectedVariation.value.id.isEmpty) {
+  //     USnackBarHelpers.customToast(message: 'Select Variation');
+  //     return;
+  //   }
+  //   // Out of Stock
+  //   if (product.productType == ProductType.variable.toString()) {
+  //     if (variationController.selectedVariation.value.stock < 1) {
+  //       USnackBarHelpers.warningSnackBar(
+  //         message: 'This variation is out of Stock',
+  //         title: 'Out of Stock',
+  //       );
+  //       return;
+  //     }
+  //   } else {
+  //     if (product.stock < 1) {
+  //       USnackBarHelpers.warningSnackBar(
+  //         message: 'This product is Out of Stock',
+  //         title: 'Out of Stock',
+  //       );
+  //     }
+  //   }
+  //   CartItemModel selectedCartItem = convertToCartItem(
+  //     product,
+  //     productQuantityInCart.value,
+  //   );
+  //   // Check if already added in the cart
+  //   int index = cartItems.indexWhere(
+  //     (cartItem) =>
+  //         cartItem.productId == selectedCartItem.productId &&
+  //         selectedCartItem.variationId == cartItem.variationId,
+  //   );
+  //   if (index >= 0) {
+  //     cartItems[index].quantity = selectedCartItem.quantity;
+  //   } else {
+  //     cartItems.add(selectedCartItem);
+  //   }
+  //   updateCart();
+  //   // show success message
+  //   USnackBarHelpers.customToast(
+  //     message: 'Your product has been added to the cart',
+  //   );
+  // }
+
+  Future<void> addToCart(ProductModel product) async {
+
+    // 🛑 PEHLE DISTANCE CHECK KARO
+    bool isLocal = await checkProductServiceability(product);
+
+    if (!isLocal) {
+      // PRODUCT 10 KM SE BAHAR HAI -> PAN INDIA SNACKBAR!
+      USnackBarHelpers.warningSnackBar(
+        title: 'Pan-India Order 🌍',
+        message: 'This item is outside your delivery zone. To order Pan-India, please contact grabkrt@gmail.com',
+      );
+      return; // ❌ YAHI ROK DO, PRODUCT CART MEIN ADD NAHI HOGA!
+    }
+
+    // ✅ AGAR 10 KM KE ANDAR HAI, TOH NORMAL ADD TO CART CHALEGA:
     // check quantity of the product
     if (productQuantityInCart < 1) {
       USnackBarHelpers.customToast(message: 'Select Quantity');
@@ -87,29 +155,35 @@ class CartController extends GetxController {
           message: 'This product is Out of Stock',
           title: 'Out of Stock',
         );
+        return; // Added return here to prevent out of stock items from being added
       }
     }
+
     CartItemModel selectedCartItem = convertToCartItem(
       product,
       productQuantityInCart.value,
     );
+
     // Check if already added in the cart
     int index = cartItems.indexWhere(
-      (cartItem) =>
-          cartItem.productId == selectedCartItem.productId &&
+          (cartItem) =>
+      cartItem.productId == selectedCartItem.productId &&
           selectedCartItem.variationId == cartItem.variationId,
     );
+
     if (index >= 0) {
       cartItems[index].quantity = selectedCartItem.quantity;
     } else {
       cartItems.add(selectedCartItem);
     }
     updateCart();
+
     // show success message
     USnackBarHelpers.customToast(
       message: 'Your product has been added to the cart',
     );
   }
+
 
   void addOneToCart(CartItemModel item) {
     int index = cartItems.indexWhere(
@@ -263,4 +337,41 @@ class CartController extends GetxController {
       }
     }
   }
+
+
+
+
+
+
+  Future<bool> checkProductServiceability(ProductModel product) async {
+    try {
+      if (product.storeId == null || product.storeId!.isEmpty) return false;
+
+      final addressController = Get.put(AddressController());
+      final selectedAddress = addressController.selectedAddress.value;
+      if (selectedAddress.id.isEmpty || selectedAddress.latitude == 0.0) return false;
+
+      // Direct Firestore se store mangwao
+      var storeDoc = await FirebaseFirestore.instance.collection('Stores').doc(product.storeId).get();
+      if (!storeDoc.exists) return false;
+
+      var sData = storeDoc.data()!;
+      double sLat = double.tryParse(sData['latitude'].toString()) ?? 0.0;
+      double sLng = double.tryParse(sData['longitude'].toString()) ?? 0.0;
+      double sRadius = double.tryParse(sData['deliveryRadius'].toString()) ?? 10.0;
+
+      double distanceInMeters = Geolocator.distanceBetween(
+          selectedAddress.latitude, selectedAddress.longitude, sLat, sLng
+      );
+
+      return (distanceInMeters / 1000) <= sRadius;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+
+
+
 }

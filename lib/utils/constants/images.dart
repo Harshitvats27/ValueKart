@@ -221,10 +221,10 @@ class UImages{
   static const String nikeLogo = 'assets/brands/nike.png';
   static const String northStarLogo = 'assets/brands/north_star.jpg';
   static const String poloLogo = 'assets/brands/polo.png';
-
   // Payment Methods
   static const String applePay = "assets/icons/payment_methods/apple-pay.png";
   static const String googlePay = "assets/icons/payment_methods/google-pay.png";
+  static const String upi = "assets/icons/payment_methods/upi.png";
   static const String creditCard = "assets/icons/payment_methods/credit-card.png";
   static const String masterCard = "assets/icons/payment_methods/master-card.png";
   static const String paypal = "assets/icons/payment_methods/paypal.png";

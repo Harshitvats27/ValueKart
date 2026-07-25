@@ -17,8 +17,7 @@ class UBillingAmountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
-    final promoCodeController =PromoCodeController.instance;
-
+    final promoCodeController = PromoCodeController.instance;
 
     return Column(
       children: [
@@ -77,28 +76,26 @@ class UBillingAmountSection extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                Obx(
-                  (){
-                    double totalPrice = UPricingCalculator.calculateTotalPrice(
-                      subTotal,
-                      'Kenya',
-                    );
-                    final promoCode = promoCodeController.appliedPromoCode.value;
-                     totalPrice = promoCodeController.calculatePriceAfterDiscount(
-                      promoCode,
-                      totalPrice,
-                    );
+                Obx(() {
+                  double totalPrice = UPricingCalculator.calculateTotalPrice(
+                    subTotal,
+                    'Kenya',
+                  );
+                  final promoCode = promoCodeController.appliedPromoCode.value;
+                  totalPrice = promoCodeController.calculatePriceAfterDiscount(
+                    promoCode,
+                    totalPrice,
+                  );
 
-                    return Text(
-                      '${UTexts.currency}${totalPrice.toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    );
-                  }
-                ),
+                  return Text(
+                    '${UTexts.currency}${totalPrice.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  );
+                }),
               ],
             ),
 
-SizedBox(height: USizes.spaceBtwItems / 2),
+            SizedBox(height: USizes.spaceBtwItems / 2),
             Obx(() {
               final promoCode = promoCodeController.appliedPromoCode.value;
 
@@ -109,24 +106,15 @@ SizedBox(height: USizes.spaceBtwItems / 2),
                   Expanded(
                     child: Text(
                       'Discount',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .apply(color: UColors.success),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.apply(color: UColors.success),
                     ),
                   ),
                   Text(promoCodeController.getDiscountPrice()),
                 ],
               );
-            })
-
-
-
-
-
-
-
-
+            }),
           ],
         ),
       ],

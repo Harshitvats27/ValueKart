@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,8 +10,12 @@ import 'package:e_commerce_application/utils/helpers/cloud_helper_functions.dart
 import 'package:e_commerce_application/utils/helpers/network_manager.dart';
 import 'package:e_commerce_application/utils/pop_ups/full_screen_loader.dart';
 import 'package:e_commerce_application/utils/pop_ups/snackbar_helpers.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../data/repositories/address/address_repository.dart';
+import '../../../utils/helpers/u_empty_state_widget.dart';
+import '../../shop/screens/personalisation/screens/address/new_address.dart';
 import '../../shop/screens/personalisation/screens/address/widgets/single_address.dart';
 import '../models/address_model.dart';
 
@@ -40,6 +45,8 @@ class AddressController extends GetxController {
   void onInit() {
     super.onInit();
     getCurrentLocation();
+    getAllAddresses();
+    loadInitialUserAddress();
   }
   final GlobalKey<FormState> addressFormKey = GlobalKey<FormState>();
 
@@ -47,13 +54,24 @@ class AddressController extends GetxController {
   Future<List<AddressModel>> getAllAddresses() async {
     try {
       List<AddressModel> addresses = await _repository.fetchUserAddresses();
+
+      // 🔥 FIX 3: Agar array khali hai, toh variable ko khaali set karo taaki purana na dikhe
+      if (addresses.isEmpty) {
+        selectedAddress.value = AddressModel.empty();
+        return [];
+      }
+
+      // 🔥 FIX 4: Agar by-chance kisi address mein 'selectedAddress = true' nahi hai,
+      // toh automatically list ka pehla address select kar lo taaki hamesha address dikhe.
       selectedAddress.value = addresses.firstWhere(
             (element) => element.selectedAddress,
-        orElse: () => AddressModel.empty(),
+        orElse: () => addresses.first,
       );
+
       return addresses;
     } catch (e) {
-      USnackBarHelpers.errorSnackBar(title: 'Error', message: e.toString());
+      // Error aane par bhi variable khali karo
+      selectedAddress.value = AddressModel.empty();
       return [];
     }
   }
@@ -68,8 +86,11 @@ class AddressController extends GetxController {
   /// Fetch Current GPS Location
   Future<void> getCurrentLocation() async {
     try {
-      UFullScreenLoader.openLoadingDialog('Fetching Current Location...');
-      LocationPermission permission = await Geolocator.requestPermission();
+      // 🔥 FIX: Yahan se UFullScreenLoader hata diya taaki app crash na ho
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
 
       if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -77,7 +98,6 @@ class AddressController extends GetxController {
 
         updateCoordinates(currentLocation);
 
-        // NAYA CODE: Map ke camera ko automatically current location par animate karein
         if (googleMapController != null) {
           googleMapController!.animateCamera(
             CameraUpdate.newCameraPosition(
@@ -86,7 +106,6 @@ class AddressController extends GetxController {
           );
         }
       }
-      UFullScreenLoader.stopLoading();
     } catch (e) {
       UFullScreenLoader.stopLoading();
       USnackBarHelpers.errorSnackBar(title: 'Location Error', message: e.toString());
@@ -131,8 +150,9 @@ class AddressController extends GetxController {
 
       UFullScreenLoader.stopLoading();
       resetFormFields();
-      Navigator.pop(Get.context!);
-      Navigator.pop(Get.context!);
+      // Navigator.pop(Get.context!);
+      // Navigator.pop(Get.context!);
+      Get.back();
       USnackBarHelpers.successSnackBar(title: 'Success', message: 'Address saved successfully');
       refreshData.toggle();
     } catch (e) {
@@ -167,44 +187,44 @@ class AddressController extends GetxController {
   }
 
   /// [FIX] Missing Method for Checkout Address Change
-  Future<void> selectNewAddressBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(USizes.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              USectionHeading(title: 'Select Address', showActionButtton: false),
-              const SizedBox(height: USizes.spaceBtwItems),
-              FutureBuilder(
-                future: getAllAddresses(),
-                builder: (context, snapshot) {
-                  final widget = UCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot);
-                  if (widget != null) return widget;
-
-                  return ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: USizes.spaceBtwItems),
-                    itemBuilder: (context, index) => USingleAddress(
-                      addresses: snapshot.data![index],
-                      onTap: () async {
-                        await selectAddress(snapshot.data![index]);
-                        Get.back();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Future<void> selectNewAddressBottomSheet(BuildContext context) {
+  //   return showModalBottomSheet(
+  //     context: context,
+  //     builder: (context) => SingleChildScrollView(
+  //       child: Container(
+  //         padding: const EdgeInsets.all(USizes.lg),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             USectionHeading(title: 'Select Address', showActionButtton: false),
+  //             const SizedBox(height: USizes.spaceBtwItems),
+  //             FutureBuilder(
+  //               future: getAllAddresses(),
+  //               builder: (context, snapshot) {
+  //                 final widget = UCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot);
+  //                 if (widget != null) return widget;
+  //
+  //                 return ListView.separated(
+  //                   physics: const NeverScrollableScrollPhysics(),
+  //                   shrinkWrap: true,
+  //                   itemCount: snapshot.data!.length,
+  //                   separatorBuilder: (_, __) => const SizedBox(height: USizes.spaceBtwItems),
+  //                   itemBuilder: (context, index) => USingleAddress(
+  //                     addresses: snapshot.data![index],
+  //                     onTap: () async {
+  //                       await selectAddress(snapshot.data![index]);
+  //                       Get.back();
+  //                     },
+  //                   ),
+  //                 );
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void resetFormFields() {
     name.clear();
@@ -296,6 +316,108 @@ class AddressController extends GetxController {
       USnackBarHelpers.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
+  /// 🔥 UPDATED: Bottom Sheet (Dark/Light mode support & Add New Address Button)
+  /// 🔥 UPDATED: selectNewAddressBottomSheet
+  Future<void> selectNewAddressBottomSheet(BuildContext context) {
+    // 🔥 FIX 2B: Get.bottomSheet theme change par automatically react karta hai
+    return Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(USizes.lg),
+        // Ye line ensure karegi ki dark/light mode instantly change ho
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const USectionHeading(title: 'Select Delivery Address', showActionButtton: false),
+              const SizedBox(height: USizes.spaceBtwItems),
 
+              FutureBuilder(
+                future: getAllAddresses(),
+                builder: (context, snapshot) {
+                  // 🔥 FIX 3: Custom Loading Animation jab tak data fetch ho raha ho
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Apna lottie file ka path check kar lena yahan
+                          Lottie.asset('assets/animations/loading.json', width: 100, height: 100),
+                          const SizedBox(height: 10),
+                          Text('Loading addresses...', style: Theme.of(context).textTheme.bodyMedium),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Agar data null hai ya list empty hai tab dikhayega "No address found"
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
+                    return const UEmptyStateWidget(
+                      icon: Iconsax.location_add,
+                      title: "No Saved Addresses Found 📍",
+                      subTitle: "Tap the button below to add your first delivery address!",
+                    );
+                  }
+
+                  // Data milne par List dikhayega
+                  return ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: USizes.spaceBtwItems),
+                    itemBuilder: (context, index) => USingleAddress(
+                      addresses: snapshot.data![index],
+                      onTap: () async {
+                        await selectAddress(snapshot.data![index]);
+                        Get.back(); // Select hone par bottom sheet band kardo
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: USizes.spaceBtwSections),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back(); // Pehle bottom sheet close karo
+                    Get.to(() => const AddNewAddressScreen()); // Fir add screen pe jao
+                  },
+                  child: const Text('Add New Address'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      isScrollControlled: true, // Lamba content handle karne ke liye
+    );
+  }
+
+  // 🔥 FIX: Auto Bottom Sheet & Initial Load ke liye
+  Future<void> loadInitialUserAddress() async {
+    // 1. Agar user logged-in nahi hai, toh yahin se wapas mud jao (No Bottom Sheet on Login Page!)
+    if (FirebaseAuth.instance.currentUser == null) {
+      print("🔒 User logged out hai. Bottom sheet nahi khulegi.");
+      return;
+    }
+
+    final addresses = await getAllAddresses();
+
+    // 2. Agar address list khali hai aur user login hai
+    if (addresses.isEmpty) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        // Double check ki tab tak user ne logout toh nahi kar diya ya login page pe toh nahi hai
+        if (FirebaseAuth.instance.currentUser != null && Get.overlayContext != null) {
+          // Check ki kya hum Navigation screen ya Home par hain
+          if (Get.currentRoute != '/LoginScreen' && Get.currentRoute != '/OnboardingScreen') {
+            print("📍 Naya user detected! Opening Address Bottom Sheet...");
+            selectNewAddressBottomSheet(Get.overlayContext!);
+          }
+        }
+      });
+    }
+  }
 
 }

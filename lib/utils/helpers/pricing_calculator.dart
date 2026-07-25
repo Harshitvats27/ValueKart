@@ -5,7 +5,7 @@ class UPricingCalculator {
   // ==========================================
   static String calculateShippingCost(double subTotal, String location) {
     // Tune bola 15 kar de, toh ye fixed ₹15 ho gaya
-    double shippingCost = 15.0;
+    double shippingCost = 25.0;
     return shippingCost.toStringAsFixed(2);
   }
 
@@ -14,8 +14,9 @@ class UPricingCalculator {
   // ==========================================
   static String calculateTax(double productPrice, String location) {
     // 5% tax nikalne ke liye 0.05 se multiply kiya hai
-    double taxRate = 0.05;
-    double taxAmount = productPrice * taxRate;
+    double taxRate = 0.03;
+    double shipCost = 25.0;
+    double taxAmount = (productPrice+shipCost) * taxRate;
     return taxAmount.toStringAsFixed(2);
   }
 

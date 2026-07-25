@@ -6,7 +6,9 @@ import 'package:e_commerce_application/utils/constants/images.dart';
 import 'package:e_commerce_application/utils/constants/sizes.dart';
 import 'package:e_commerce_application/utils/helpers/cloud_helper_functions.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:iconsax/iconsax.dart';
 
+import '../../../../../utils/helpers/u_empty_state_widget.dart';
 import '../../../controllers/brand/brand_controller.dart';
 import '../../../models/brand_model.dart';
 
@@ -61,9 +63,17 @@ class CategoryBrands extends StatelessWidget {
                 // products found
                 final products = snapshot.data!;
 
+                if (products.isEmpty) {
+                  return const UEmptyStateWidget(
+                    icon: Iconsax.shop,
+                    title: "This brand is currently out of reach 🏬",
+                    subTitle: "None of the stores within specified radius of your location carry this brand right now.",
+                  );
+                }
+
+// Agar products hain tabhi Showcase dikhao:
                 return UBrandShowcase(
                   images: products.map((product) => product.thumbnail).toList(),
-
                   brand: brand,
                 );
               },

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../../common/widgets/text/section_heading.dart';
+import '../../../../utils/constants/constantsapi.dart';
 import '../../../../utils/constants/images.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
@@ -40,7 +41,7 @@ class CheckoutController extends GetxController {
   // 👇 THIS WAS MISSING
   void openRazorpay(double amount) {
     var options = {
-      'key': 'rzp_test_SHIEAnUdXRpsNx', // 🔥 Put your test key here
+      'key': live_razorpay_api, // 🔥 Put your test key here
       'amount': (amount * 100).toInt(),
       'name': 'E Commerce App',
       'description': 'Order Payment',
@@ -96,8 +97,8 @@ class CheckoutController extends GetxController {
               SizedBox(height: USizes.spaceBtwItems / 2),
               UPaymentTile(
                 paymentMethod: PaymentMethodModel(
-                  name: 'Paypal',
-                  image: UImages.paypal,
+                  name: 'UPI',
+                  image: UImages.upi,
                   paymentMethod: PaymentMethods.paypal,
                 ),
               ),
