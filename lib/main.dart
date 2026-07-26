@@ -1,6 +1,7 @@
 import 'package:e_commerce_application/common/data/repositories/authentication_repository.dart';
 import 'package:e_commerce_application/utils/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -28,7 +29,13 @@ Future<void> main() async {
 
   // 🔥 MAIN STEP: Yahan NotificationService ko start kar diya
   // Iske andar FCM token bhi save ho jayega aur foreground listener bhi chalu ho jayega!
-  await NotificationService.initialize();
+  try {
+    if (!kIsWeb) {
+      await NotificationService.initialize();
+    }
+  } catch (e) {
+    print("Notification Service Init Failed: $e");
+  }
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 

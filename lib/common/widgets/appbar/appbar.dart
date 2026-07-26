@@ -27,22 +27,23 @@ class UAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final bool dark = UHelperfunctions.isDarkTheme(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: USizes.md),
-      child: AppBar(
-        automaticallyImplyLeading: false,
-        leading: showBackArrow
-            ? IconButton(
-          onPressed: Get.back,
-          icon: Icon(Iconsax.arrow_left,color: dark ? UColors.white : UColors.dark,),
-        )
-            : leadingIcon != null
-            ? IconButton(onPressed: leadingOnpressed, icon: Icon(leadingIcon))
-            : null,
-        title: title,
-        actions: actions,
-      ),
-    );
+    return  Padding(
+        padding: EdgeInsets.symmetric(horizontal: USizes.md),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          leading: showBackArrow
+              ? IconButton(
+            onPressed: Get.back,
+            icon: Icon(Iconsax.arrow_left,color: dark ? UColors.white : UColors.dark,),
+          )
+              : leadingIcon != null
+              ? IconButton(onPressed: leadingOnpressed, icon: Icon(leadingIcon))
+              : null,
+          title: title,
+          actions: actions,
+        ),
+      );
+
   }
 
   @override

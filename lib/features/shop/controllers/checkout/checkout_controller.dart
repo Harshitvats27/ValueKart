@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -17,7 +18,7 @@ class CheckoutController extends GetxController {
 
   Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel.empty().obs;
 
-  late Razorpay _razorpay;
+  Razorpay? _razorpay;
 
   @override
   void onInit() {
@@ -30,12 +31,16 @@ class CheckoutController extends GetxController {
       paymentMethod: PaymentMethods.cashOnDelivery,
     );
 
-    // Initialize Razorpay
-    _razorpay = Razorpay();
-
-    // Register listeners
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    // Initialize Razorpay only if not on web
+    if (!kIsWeb) {
+      try {
+        _razorpay = Razorpay();
+        _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+        _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      } catch (e) {
+        print("Razorpay initialization error: $e");
+      }
+    }
   }
 
   // 👇 THIS WAS MISSING
@@ -49,7 +54,7 @@ class CheckoutController extends GetxController {
     };
 
     try {
-      _razorpay.open(options);
+      _razorpay?.open(options);
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
@@ -128,7 +133,7 @@ class CheckoutController extends GetxController {
 
   @override
   void onClose() {
-    _razorpay.clear();
+    _razorpay?.clear();
     super.onClose();
   }
 }

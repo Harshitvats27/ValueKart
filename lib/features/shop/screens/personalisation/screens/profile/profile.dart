@@ -25,60 +25,61 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userController = Get.put(UserController());
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            UProfilePrimaryHeader(),
-            Padding(
-              padding: const EdgeInsets.all(USizes.defaultSpace),
-              child: Column(
-                children: [
-                  // user profile detaisl
-                  UserProfileTile(),
-                  SizedBox(height: USizes.spaceBtwItems),
-
-                  //Account Section Heading
-                  USectionHeading(
-                    title: 'Account Settings',
-                    showActionButtton: false,
-                  ),
-
-                  // Setting Menu
-                  SettingMenuTile(ontap: ()=>Get.to(()=>AddressScreen()),
-                    icon: Iconsax.safe_home,
-                    title: 'MY Addresses',
-                    subtitle: 'Set Shopping delivery address',
-                  ),
-                  SettingMenuTile(ontap: ()=>Get.to(()=>CartScreen()),
-                    icon: Iconsax.shopping_cart,
-                    title: 'My Cart',
-                    subtitle: 'Add,remove products and move to checkout',
-                  ),
-                  SettingMenuTile(
-                    ontap: ()=>Get.to(()=>OrderScreen()),
-                    icon: Iconsax.bag_tick,
-                    title: 'My Orders',
-                    subtitle: 'In-progress and Completed Orders',
-                  ),
-
-                  SizedBox(height: USizes.spaceBtwSections),
-
-                  // logout
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: AuthenticationReposiotory.instance.logout,
-                      child: Text('Logout'),
+      body:  SingleChildScrollView(
+          child: Column(
+            children: [
+              UProfilePrimaryHeader(),
+              Padding(
+                padding: const EdgeInsets.all(USizes.defaultSpace),
+                child: Column(
+                  children: [
+                    // user profile detaisl
+                    UserProfileTile(),
+                    SizedBox(height: USizes.spaceBtwItems),
+        
+                    //Account Section Heading
+                    USectionHeading(
+                      title: 'Account Settings',
+                      showActionButtton: false,
                     ),
-                  ),
-
-                  SizedBox(height: USizes.spaceBtwSections),
-                ],
+        
+                    // Setting Menu
+                    SettingMenuTile(ontap: ()=>Get.to(()=>AddressScreen()),
+                      icon: Iconsax.safe_home,
+                      title: 'MY Addresses',
+                      subtitle: 'Set Shopping delivery address',
+                    ),
+                    SettingMenuTile(ontap: ()=>Get.to(()=>CartScreen()),
+                      icon: Iconsax.shopping_cart,
+                      title: 'My Cart',
+                      subtitle: 'Add,remove products and move to checkout',
+                    ),
+                    SettingMenuTile(
+                      ontap: ()=>Get.to(()=>OrderScreen()),
+                      icon: Iconsax.bag_tick,
+                      title: 'My Orders',
+                      subtitle: 'In-progress and Completed Orders',
+                    ),
+        
+                    SizedBox(height: USizes.spaceBtwSections),
+        
+                    // logout
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: AuthenticationReposiotory.instance.logout,
+                        child: Text('Logout'),
+                      ),
+                    ),
+        
+                    SizedBox(height: USizes.spaceBtwSections),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+
     );
   }
 }

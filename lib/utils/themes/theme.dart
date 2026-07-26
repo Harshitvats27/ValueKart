@@ -1,4 +1,3 @@
-
 import 'package:e_commerce_application/utils/themes/widgets_theme/appbar_theme.dart';
 import 'package:e_commerce_application/utils/themes/widgets_theme/bottom_sheet.dart';
 import 'package:e_commerce_application/utils/themes/widgets_theme/checkbox_theme.dart';
@@ -23,7 +22,10 @@ class UAppTheme {
     disabledColor: UColors.grey,
     textTheme: UTextTheme.lightTextTheme,
     chipTheme: UChipTheme.lightChipTheme,
-    scaffoldBackgroundColor: UColors.white,
+
+    // 🔥 Yahan scaffoldBackgroundColor ko UColors.light (Creamy off-white) kar diya
+    scaffoldBackgroundColor: UColors.light,
+
     appBarTheme: UAppBarTheme.lightAppBarTheme,
     checkboxTheme: UCheckboxTheme.lightCheckboxTheme,
     bottomSheetTheme: UBottomSheetTheme.lightBottomSheetTheme,
@@ -40,7 +42,10 @@ class UAppTheme {
     disabledColor: UColors.grey,
     textTheme: UTextTheme.darkTextTheme,
     chipTheme: UChipTheme.darkChipTheme,
-    scaffoldBackgroundColor: UColors.black,
+
+    // 🔥 Yahan dark mode ka background Deep Charcoal (UColors.dark) kar diya
+    scaffoldBackgroundColor: UColors.dark,
+
     appBarTheme: UAppBarTheme.darkAppBarTheme,
     checkboxTheme: UCheckboxTheme.darkCheckboxTheme,
     bottomSheetTheme: UBottomSheetTheme.darkBottomSheetTheme,

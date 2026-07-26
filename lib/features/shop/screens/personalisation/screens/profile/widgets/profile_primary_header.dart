@@ -15,24 +15,25 @@ class UProfilePrimaryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox(height: USizes.profilePrimaryHeaderHeight+60),
-        PrimaryHeaderContainer(
-          height: USizes.profilePrimaryHeaderHeight,
-          child: Container(),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: UserProfileLogo(),
-          ),
-        ),
+    return  Stack(
+          children: [
+            SizedBox(height: USizes.profilePrimaryHeaderHeight+60),
+            PrimaryHeaderContainer(
+              height: USizes.profilePrimaryHeaderHeight,
+              child: Container(),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: UserProfileLogo(),
+              ),
+            ),
+        
+        
+          ],
+        );
 
-
-      ],
-    );
   }
 }

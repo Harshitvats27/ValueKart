@@ -21,12 +21,14 @@ class OnBoardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: UDeviceHelper.getAppBarHeight()),
-      child: Column(
-        children: [
-          Lottie.asset(animation),
-          Text(title,style: Theme.of(context).textTheme.headlineMedium,),
-          Text(subtitle,textAlign: TextAlign.center,),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Lottie.asset(animation, height: MediaQuery.of(context).size.height * 0.6),
+            Text(title,style: Theme.of(context).textTheme.headlineMedium,),
+            Text(subtitle,textAlign: TextAlign.center,),
+          ],
+        ),
       ),
     );
   }

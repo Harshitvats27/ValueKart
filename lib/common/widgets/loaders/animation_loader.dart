@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/images.dart';
 import '../../../utils/constants/sizes.dart';
+import 'package:flutter/foundation.dart';
 
 class UAnimationLoader extends StatelessWidget {
   final String text;
@@ -31,7 +32,7 @@ class UAnimationLoader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /// Animation
-          Lottie.asset(animation, width: Get.width * 0.8),
+          Lottie.asset(animation, width: kIsWeb ? (Get.width > 600 ? 400 : Get.width * 0.8) : Get.width * 0.8),
           const SizedBox(height: USizes.defaultSpace),
 
           /// Title

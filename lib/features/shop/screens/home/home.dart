@@ -41,121 +41,122 @@ class HomeScreen extends StatelessWidget {
     bool dark = UHelperfunctions.isDarkTheme(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // upper part
-            Stack(
-              children: [
-                SizedBox(height: USizes.homePrimaryHeaderHeight + 10),
-                PrimaryHeaderContainer(
-                  height: USizes.homePrimaryHeaderHeight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const UHomeAppbar(),
-                      const SizedBox(height: USizes.spaceBtwSections),
-                      // row Categories
-                      const UHomeCategories(),
-                    ],
-                  ),
-                ),
-
-                Positioned(
-                  bottom: 0,
-                  left: USizes.defaultSpace,
-                  right: USizes.defaultSpace,
-                  child: const USearchBar(),
-                ),
-              ],
-            ),
-            const SizedBox(height: USizes.defaultSpace),
-
-            // lower part
-            Padding(
-              padding: const EdgeInsets.all(USizes.defaultSpace),
-              child: Column(
+      body:  SingleChildScrollView(
+          child: Column(
+            children: [
+              // upper part
+              Stack(
                 children: [
-                  // 🔥 Banners Hamesha Dikhenge
-                  const UPromoSlider(),
-                  const SizedBox(height: USizes.spaceBtwSections),
-
-                  // 🔥 Sirf Products wale hisse par Address ki condition lagayenge
-                  Obx(() {
-                    // Obx ke andar address get kiya taaki address change hote hi UI badal jaye
-                    final address = Get.put(AddressController()).selectedAddress.value;
-
-                    // 1. Agar koi address select nahi kiya hai
-                    if (address.id.isEmpty || address.latitude == 0.0) {
+                  SizedBox(height: USizes.homePrimaryHeaderHeight + 10),
+                  PrimaryHeaderContainer(
+                    height: USizes.homePrimaryHeaderHeight,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const UHomeAppbar(),
+                        const SizedBox(height: USizes.spaceBtwSections),
+                        // row Categories
+                        const UHomeCategories(),
+                      ],
+                    ),
+                  ),
+        
+                  Positioned(
+                    bottom: 0,
+                    left: USizes.defaultSpace,
+                    right: USizes.defaultSpace,
+                    child: const USearchBar(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: USizes.defaultSpace),
+        
+              // lower part
+              Padding(
+                padding: const EdgeInsets.all(USizes.defaultSpace),
+                child: Column(
+                  children: [
+                    // 🔥 Banners Hamesha Dikhenge
+                    const UPromoSlider(),
+                    const SizedBox(height: USizes.spaceBtwSections),
+        
+                    // 🔥 Sirf Products wale hisse par Address ki condition lagayenge
+                    Obx(() {
+                      // Obx ke andar address get kiya taaki address change hote hi UI badal jaye
+                      final address = Get.put(AddressController()).selectedAddress.value;
+        
+                      // 1. Agar koi address select nahi kiya hai
+                      if (address.id.isEmpty || address.latitude == 0.0) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 30),
+                            const Icon(Iconsax.location_cross, size: 50, color: Colors.grey),
+                            const SizedBox(height: 15),
+                            Text(
+                              'Please select an address to see products in your area 📍',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        );
+                      }
+        
+                      // 2. Agar products load ho rahe hain
+                      if (productController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+        
+                      // 3. Agar address ke aas-paas koi store (products) nahi hai
+                      if (productController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+        
+                      // 3. Agar address ke aas-paas koi store (products) nahi hai
+                      if (productController.featuredProducts.isEmpty) {
+                        return UEmptyStateWidget(
+                          icon: Iconsax.box_remove,
+                          title: 'Not Serviceable in your area yet! 🚀',
+                          subTitle: 'We are expanding fast! Explore items from across India below.',
+                          showAction: true,
+                          actionTitle: 'Explore Pan-India Catalog 🌍',
+                          onActionPressed: () {
+                            // TODO: Yahan apni PanIndiaCatalogScreen ka route daal dena
+                            Get.to(() => const PanIndiaCatalogScreen());
+                          },
+                        );
+                      }
+        
+                      // 4. Agar address bhi hai aur products bhi hain (Sab theek hai)
                       return Column(
                         children: [
-                          const SizedBox(height: 30),
-                          const Icon(Iconsax.location_cross, size: 50, color: Colors.grey),
-                          const SizedBox(height: 15),
-                          Text(
-                            'Please select an address to see products in your area 📍',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyLarge,
+                          // Section Heading
+                          USectionHeading(
+                            title: 'Popular Products',
+                            onPressed: () => Get.to(() => AllProductsScreen(
+                              title: 'Popular Products',
+                              futureMethod: productController.getAllFeaturedProducts(),
+                            )),
+                          ),
+                          const SizedBox(height: USizes.spaceBtwSections),
+        
+                          // Vertical product cards
+                          UGridLayout(
+                            itemBuilder: (context, index) {
+                              ProductModel product = productController.featuredProducts[index];
+                              return UProductcardVertical(productModel: product);
+                            },
+                            itemCount: productController.featuredProducts.length,
                           ),
                         ],
                       );
-                    }
-
-                    // 2. Agar products load ho rahe hain
-                    if (productController.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    // 3. Agar address ke aas-paas koi store (products) nahi hai
-                    if (productController.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    // 3. Agar address ke aas-paas koi store (products) nahi hai
-                    if (productController.featuredProducts.isEmpty) {
-                      return UEmptyStateWidget(
-                        icon: Iconsax.box_remove,
-                        title: 'Not Serviceable in your area yet! 🚀',
-                        subTitle: 'We are expanding fast! Explore items from across India below.',
-                        showAction: true,
-                        actionTitle: 'Explore Pan-India Catalog 🌍',
-                        onActionPressed: () {
-                          // TODO: Yahan apni PanIndiaCatalogScreen ka route daal dena
-                          Get.to(() => const PanIndiaCatalogScreen());
-                        },
-                      );
-                    }
-
-                    // 4. Agar address bhi hai aur products bhi hain (Sab theek hai)
-                    return Column(
-                      children: [
-                        // Section Heading
-                        USectionHeading(
-                          title: 'Popular Products',
-                          onPressed: () => Get.to(() => AllProductsScreen(
-                            title: 'Popular Products',
-                            futureMethod: productController.getAllFeaturedProducts(),
-                          )),
-                        ),
-                        const SizedBox(height: USizes.spaceBtwSections),
-
-                        // Vertical product cards
-                        UGridLayout(
-                          itemBuilder: (context, index) {
-                            ProductModel product = productController.featuredProducts[index];
-                            return UProductcardVertical(productModel: product);
-                          },
-                          itemCount: productController.featuredProducts.length,
-                        ),
-                      ],
-                    );
-                  }),
-                ],
+                    }),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+
     );
   }
 }

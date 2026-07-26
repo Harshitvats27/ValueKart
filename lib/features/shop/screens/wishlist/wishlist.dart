@@ -38,42 +38,42 @@ class WishListScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(USizes.defaultSpace),
-          child: Obx(
-            () => FutureBuilder(
-              future: controller.getFavouriteProducts(),
-              builder: (context, snapshot) {
-                // Handle Emptyu Data
-                final nothingFound = UAnimationLoader(
-                  text: 'Wishlist is Empty',
-                  animation: UImages.pencilAnimation,
-                  showActionButton: true,
-                  actionText: "Let's add same",
-                  onActionPressed: () =>
-                      NavigationController.instance.selectedIndex.value = 0,
-                );
-                const loader = UVerticalProductShimmer(itemCount: 6);
-                final widget = UCloudHelperFunctions.checkMultiRecordState(
-                  snapshot: snapshot,
-                  loader: loader,
-                  nothingFound: nothingFound,
-                );
-                if (widget != null) return widget;
-
-                // products found
-                final products = snapshot.data as List<ProductModel>;
-                return UGridLayout(
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return UProductcardVertical(productModel: products[index]);
-                  },
-                );
-              },
+          child: Padding(
+            padding: const EdgeInsets.all(USizes.defaultSpace),
+            child: Obx(
+              () => FutureBuilder(
+                future: controller.getFavouriteProducts(),
+                builder: (context, snapshot) {
+                  // Handle Emptyu Data
+                  final nothingFound = UAnimationLoader(
+                    text: 'Wishlist is Empty',
+                    animation: UImages.pencilAnimation,
+                    showActionButton: true,
+                    actionText: "Let's add same",
+                    onActionPressed: () =>
+                        NavigationController.instance.selectedIndex.value = 0,
+                  );
+                  const loader = UVerticalProductShimmer(itemCount: 6);
+                  final widget = UCloudHelperFunctions.checkMultiRecordState(
+                    snapshot: snapshot,
+                    loader: loader,
+                    nothingFound: nothingFound,
+                  );
+                  if (widget != null) return widget;
+        
+                  // products found
+                  final products = snapshot.data as List<ProductModel>;
+                  return UGridLayout(
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      return UProductcardVertical(productModel: products[index]);
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

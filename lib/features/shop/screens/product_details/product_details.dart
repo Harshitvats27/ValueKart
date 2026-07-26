@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:e_commerce_application/common/style/padding.dart';
 import 'package:e_commerce_application/common/widgets/appbar/appbar.dart';
 import 'package:e_commerce_application/common/widgets/button/elevated_button.dart';
@@ -40,8 +41,11 @@ class ProductDetailsScreen extends StatelessWidget {
     final dark = UHelperfunctions.isDarkTheme(context);
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: kIsWeb ? 800 : double.infinity),
+            child: Column(
+              children: [
             // product image with slider
             UProductThumbnailandSlider(product: product,),
 
@@ -127,6 +131,8 @@ class ProductDetailsScreen extends StatelessWidget {
 
 
           ],
+        ),
+          ),
         ),
       ),
       //Bottom Navigation

@@ -1,6 +1,6 @@
 {
-    "name": "e_commerce_application",
-    "short_name": "e_commerce_application",
+    "name": "GrabKrt",
+    "short_name": "GrabKrt",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

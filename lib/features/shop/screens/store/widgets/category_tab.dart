@@ -24,62 +24,62 @@ class UCategoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.instance;
-    return ListView(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: USizes.defaultSpace),
-          child: Column(
-            children: [
-              //CategoryBrands(category: category),
-              //
-              // SizedBox(height: USizes.spaceBtwItems),
-              USectionHeading(
-                title: 'Explore Products',
-                onPressed: () => Get.to(
-                  () => AllProductsScreen(
-                    title: category.name,
-                    futureMethod: controller.getCategoryProducts(
-                      categoryId: category.id,
-                      limit: -1,
+    return  ListView(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: USizes.defaultSpace),
+            child: Column(
+              children: [
+                //CategoryBrands(category: category),
+                //
+                // SizedBox(height: USizes.spaceBtwItems),
+                USectionHeading(
+                  title: 'Explore Products',
+                  onPressed: () => Get.to(
+                    () => AllProductsScreen(
+                      title: category.name,
+                      futureMethod: controller.getCategoryProducts(
+                        categoryId: category.id,
+                        limit: -1,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              FutureBuilder(
-                future: controller.getCategoryProducts(categoryId: category.id),
+                FutureBuilder(
+                  future: controller.getCategoryProducts(categoryId: category.id),
 
-                builder: (context, snapshot) {
-                  ;
-                  // Handle loader error and empty states
-                  const loader = UVerticalProductShimmer(itemCount: 4,);
-                  final widget = UCloudHelperFunctions.checkMultiRecordState(
-                    snapshot: snapshot,
-                    loader: loader,
-                  );
-                  if (widget != null) {
-                    return widget;
-                  }
+                  builder: (context, snapshot) {
+                    ;
+                    // Handle loader error and empty states
+                    const loader = UVerticalProductShimmer(itemCount: 4,);
+                    final widget = UCloudHelperFunctions.checkMultiRecordState(
+                      snapshot: snapshot,
+                      loader: loader,
+                    );
+                    if (widget != null) {
+                      return widget;
+                    }
 
-                  // products found
-                  List<ProductModel>products = snapshot.data!;
-                  return UGridLayout(
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      ProductModel product =products[index];
-                      return UProductcardVertical(
-                        productModel: product,
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: USizes.spaceBtwSections),
-            ],
+                    // products found
+                    List<ProductModel>products = snapshot.data!;
+                    return UGridLayout(
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        ProductModel product =products[index];
+                        return UProductcardVertical(
+                          productModel: product,
+                        );
+                      },
+                    );
+                  },
+                ),
+                SizedBox(height: USizes.spaceBtwSections),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
   }
 }

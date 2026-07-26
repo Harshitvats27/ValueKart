@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:e_commerce_application/common/data/repositories/user/user_repository.dart';
 import 'package:e_commerce_application/data/repositories/brand/brand_repository.dart';
 import 'package:e_commerce_application/data/repositories/promo_code/promo_code_repository.dart';
@@ -104,19 +105,26 @@ class AuthenticationReposiotory extends GetxController {
 
   Future<UserCredential> loginWithGoogle() async {
     try {
-      // Show Pop up to select account
-      final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleAccount?.authentication;
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken,
-        accessToken: googleAuth?.accessToken,
-      );
+      if (kIsWeb) {
+        // Web-specific Google Sign-In using Firebase Auth Popup
+        GoogleAuthProvider authProvider = GoogleAuthProvider();
+        UserCredential userCredential = await _auth.signInWithPopup(authProvider);
+        return userCredential;
+      } else {
+        // Mobile Google Sign-In using google_sign_in package
+        final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
+        final GoogleSignInAuthentication? googleAuth =
+            await googleAccount?.authentication;
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleAuth?.idToken,
+          accessToken: googleAuth?.accessToken,
+        );
 
-      UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
-      return userCredential;
+        UserCredential userCredential = await _auth.signInWithCredential(
+          credential,
+        );
+        return userCredential;
+      }
     } on FirebaseAuthException catch (e) {
       throw UFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -235,17 +243,22 @@ class AuthenticationReposiotory extends GetxController {
 
   Future<void> reAuthenticateWithGoogle() async {
     try {
-      final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) throw 'Google sign-in cancelled';
+      if (kIsWeb) {
+        GoogleAuthProvider authProvider = GoogleAuthProvider();
+        await currentUser!.reauthenticateWithPopup(authProvider);
+      } else {
+        final googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) throw 'Google sign-in cancelled';
 
-      final googleAuth = await googleUser.authentication;
+        final googleAuth = await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-        accessToken: googleAuth.accessToken,
-      );
+        final credential = GoogleAuthProvider.credential(
+          idToken: googleAuth.idToken,
+          accessToken: googleAuth.accessToken,
+        );
 
-      await currentUser!.reauthenticateWithCredential(credential);
+        await currentUser!.reauthenticateWithCredential(credential);
+      }
     } catch (e) {
       throw 'Google reauthentication failed';
     }

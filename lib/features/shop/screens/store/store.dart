@@ -12,6 +12,7 @@ import 'package:e_commerce_application/features/shop/screens/store/widgets/store
 import 'package:e_commerce_application/utils/constants/colors.dart';
 import 'package:e_commerce_application/utils/helpers/device_helpers.dart';
 import 'package:e_commerce_application/utils/helpers/helper_function.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -39,84 +40,86 @@ class StoreScreen extends StatelessWidget {
     final brandController = Get.put(BrandController());
     final dark = UHelperfunctions.isDarkTheme(context);
     return DefaultTabController(
-      length:controller.featuredCategories.length,
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                expandedHeight: 340,
-                floating: false,
-                pinned: true,
-                // snap: true,
-                flexibleSpace: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      UStorePrimaryHeader(),
-                      SizedBox(height: USizes.spaceBtwItems),
+        length:controller.featuredCategories.length,
+        child: Scaffold(
+          body:  NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    expandedHeight: 340,
+                    floating: false,
+                    pinned: true,
+                    // snap: true,
+                    flexibleSpace: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          UStorePrimaryHeader(),
+                          SizedBox(height: USizes.spaceBtwItems),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: USizes.defaultSpace,
-                        ),
-                        child: Column(
-                          children: [
-                            /// brand heading
-                            USectionHeading(title: 'Brands', onPressed: ()=>Get.to(()=>AllBrandsScreen())),
-
-                            // round card
-                            SizedBox(
-                              height: 70,
-                              child: Obx(
-                                  (){
-
-                                    if(brandController.isLoading.value){
-                                      return UBrandsShimmer();
-                                    }
-                                    if(brandController.featuredBrands.isEmpty){
-                                      return Center(child: Text('No Brands Found'));
-                                    }
-                                    return ListView.separated(
-                                      separatorBuilder: (context, index) =>
-                                          SizedBox(width: USizes.spaceBtwItems),
-
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: brandController.featuredBrands.length,
-                                      itemBuilder: (context, index)  {
-                                        final brand = brandController.featuredBrands[index];
-
-                                        return SizedBox(
-                                          width: USizes.brandCardWidth,
-                                          child: UBrandCard(brand: brand,onTap: () => Get.to(() => BrandProductsScreen(
-                                          title: brand.name,
-                                          brand: brand,
-                                        )),),
-                                        );
-                                      }
-                                  );
-                                  }
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: USizes.defaultSpace,
                             ),
-                          ],
-                        ),
+                            child: Column(
+                              children: [
+                                /// brand heading
+                                USectionHeading(title: 'Brands', onPressed: ()=>Get.to(()=>AllBrandsScreen())),
+
+                                // round card
+                                SizedBox(
+                                  height: 70,
+                                  child: Obx(
+                                      (){
+
+                                        if(brandController.isLoading.value){
+                                          return UBrandsShimmer();
+                                        }
+                                        if(brandController.featuredBrands.isEmpty){
+                                          return Center(child: Text('No Brands Found'));
+                                        }
+                                        return ListView.separated(
+                                          separatorBuilder: (context, index) =>
+                                              SizedBox(width: USizes.spaceBtwItems),
+
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: brandController.featuredBrands.length,
+                                          itemBuilder: (context, index)  {
+                                            final brand = brandController.featuredBrands[index];
+
+                                            return SizedBox(
+                                              width: USizes.brandCardWidth,
+                                              child: UBrandCard(brand: brand,onTap: () => Get.to(() => BrandProductsScreen(
+                                              title: brand.name,
+                                              brand: brand,
+                                            )),),
+                                            );
+                                          }
+                                      );
+                                      }
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+
+                    bottom: UTabBar(
+                      tabs: controller.featuredCategories.map((category) => Tab(child: Text(category.name))).toList(),
+                    ),
                   ),
+                ];
+              },
+              body: TabBarView(
+                  children: controller.featuredCategories.map((category) => UCategoryTab(category: category,)).toList()
                 ),
 
-                bottom: UTabBar(
-                  tabs: controller.featuredCategories.map((category) => Tab(child: Text(category.name))).toList(),
-                ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            children: controller.featuredCategories.map((category) => UCategoryTab(category: category,)).toList()
-          ),
+            ),
+
         ),
-      ),
-    );
+      );
   }
 }

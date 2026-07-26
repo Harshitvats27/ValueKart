@@ -19,28 +19,30 @@ class USearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool dark = UHelperfunctions.isDarkTheme(context);
-    return GestureDetector(
-      onTap: ()=>Get.to(()=>SearchStoreScreen()),
-      child: Hero(
-        tag: 'search_animation',
-        child: Container(
-          height: USizes.searchBarHeight,
-          padding: EdgeInsets.symmetric(horizontal: USizes.md),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadiusGeometry.circular(USizes.borderRadiusLg),
-              color: dark ? UColors.dark : UColors.light,
-              boxShadow:UShadow.searchBarShadow
+    return  GestureDetector(
+        onTap: ()=>Get.to(()=>SearchStoreScreen()),
+        child: Hero(
+          tag: 'search_animation',
+          child:  Container(
+              height: USizes.searchBarHeight,
+              padding: EdgeInsets.symmetric(horizontal: USizes.md),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadiusGeometry.circular(USizes.borderRadiusLg),
+                  color: dark ? UColors.dark : UColors.light,
+                  boxShadow:UShadow.searchBarShadow
+            
+              ),
+              child: Row(
+                children: [
+                  Icon(Iconsax.search_normal,color: UColors.darkerGrey,),
+                  SizedBox(width: USizes.spaceBtwItems,),
+                  Text(UTexts.searchBarTitle,style: Theme.of(context).textTheme.bodySmall,)
+                ],
+              ),
+            ),
 
-          ),
-          child: Row(
-            children: [
-              Icon(Iconsax.search_normal,color: UColors.darkerGrey,),
-              SizedBox(width: USizes.spaceBtwItems,),
-              Text(UTexts.searchBarTitle,style: Theme.of(context).textTheme.bodySmall,)
-            ],
-          ),
         ),
-      ),
-    );
+      );
+
   }
 }

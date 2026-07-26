@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'GrabKrt',
       theme: UAppTheme.lightTheme,
       darkTheme: UAppTheme.darkTheme,
       getPages: UAppRoutes.screens,
